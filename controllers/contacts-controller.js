@@ -1,5 +1,8 @@
 import fs from "fs/promises";
 import Contact from "../models/Contact.js";
+
+import Jimp from "jimp";
+
 import { HttpError, cloudinary } from "../helpers/index.js";
 import { ctrlWrapper } from "../decorators/index.js";
 
@@ -26,6 +29,9 @@ const getById = async (req, res) => {
 const add = async (req, res) => {
   const { id: owner } = req.user;
   const { path: oldPath } = req.file;
+  const file = await Jimp.read(oldPath);
+  file.resize(250, 250).write(oldPath);
+
   const { url: avatarURL } = await cloudinary.uploader.upload(oldPath, {
     folder: "avatars",
   });
