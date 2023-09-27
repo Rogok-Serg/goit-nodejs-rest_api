@@ -1,15 +1,19 @@
+import fs from "fs/promises";
 import Contact from "../models/Contact.js";
-import { HttpError } from "../helpers/index.js";
+
+import Jimp from "jimp";
+
+import { HttpError, cloudinary } from "../helpers/index.js";
 import { ctrlWrapper } from "../decorators/index.js";
 
 const getAll = async (req, res) => {
   const { id: owner } = req.user;
-  const { page = 1, limit = 5 } = req.query;
+  const { page = 1, limit = 2 } = req.query;
   const skip = (page - 1) * limit;
-  const result = await Contact.find({ owner }, { skip, limit }).populate(
-    "owner",
-    "email subscription"
-  );
+  const result = await Contact.find({ owner }, "-createdAt -updatedAt", {
+    skip,
+    limit,
+  }).populate("owner", "email subscription");
   res.json(result);
 };
 
@@ -24,7 +28,15 @@ const getById = async (req, res) => {
 
 const add = async (req, res) => {
   const { id: owner } = req.user;
-  const result = await Contact.create({ ...req.body, owner });
+  const { path: oldPath } = req.file;
+  const file = await Jimp.read(oldPath);
+  file.resize(250, 250).write(oldPath);
+
+  const { url: avatarURL } = await cloudinary.uploader.upload(oldPath, {
+    folder: "avatars",
+  });
+  await fs.unlink(oldPath);
+  const result = await Contact.create({ ...req.body, avatarURL, owner });
   res.status(201).json(result);
 };
 
