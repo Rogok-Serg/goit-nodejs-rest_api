@@ -1,14 +1,13 @@
 import mongoose from "mongoose";
 import request from "supertest";
 import app from "../../app.js";
-import "dotenv/config.js";
 
 import User from "../../models/Users.js";
 
 const { DB_HOST, PORT } = process.env;
 
 describe("test login route", () => {
-  let server = "";
+  let server = null;
 
   beforeAll(async () => {
     await mongoose.connect(DB_HOST);
@@ -22,9 +21,7 @@ describe("test login route", () => {
 
   beforeEach(() => {});
 
-  afterEach(async () => {
-    // await User.deleteMany({});
-  });
+  afterEach(async () => {});
 
   test("test login with correct data", async () => {
     const loginData = {
