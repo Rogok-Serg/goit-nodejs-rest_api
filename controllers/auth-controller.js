@@ -56,7 +56,7 @@ const verify = async (req, res) => {
 
 const resendVerifyEmail = async (req, res) => {
   const { email } = req.body;
-  const user = await UserfindeOne({ email });
+  const user = await User.findeOne({ email });
   if (!user) {
     throw HttpError(404, "Email not found");
   }

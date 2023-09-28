@@ -12,7 +12,7 @@ const userEmailValidate = validateBody(userSchemas.userEmailSchema);
 
 authRouter.post("/register", userRegisterValidate, authController.register);
 authRouter.get("/verify/:verificationToken", authController.verify);
-authRouter.post("verify", userEmailValidate, authController.resendVerifyEmail);
+authRouter.post("/verify", userEmailValidate, authController.resendVerifyEmail);
 authRouter.post("/login", userloginValidate, authController.login);
 authRouter.get("/current", authenticate, authController.getCurrent);
 authRouter.post("/logout", authenticate, authController.logout);
